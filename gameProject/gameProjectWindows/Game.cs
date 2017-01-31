@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using gameProjectWindows.GameObjects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -7,15 +8,17 @@ namespace gameProjectWindows
 	/// <summary>
 	/// This is the main type for your game.
 	/// </summary>
-	public class Game1 : Game
+	public class Game : Microsoft.Xna.Framework.Game
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
-		public const int WINDOW_HEIGHT = 480;
-		public const int WINDOW_WIDTH = 720;
+		public World myWorld;
 
-		public Game1()
+		public const int WINDOW_HEIGHT = 480;
+		public const int WINDOW_WIDTH = 704;
+
+		public Game()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
@@ -34,6 +37,10 @@ namespace gameProjectWindows
 		protected override void Initialize()
 		{
 			// TODO: Add your initialization logic here
+			myWorld = new World(WINDOW_WIDTH, WINDOW_HEIGHT, Content) {
+				Texture = Content.Load<Texture2D>("fontTmp"),
+				Position = new Vector2(0, 0)
+			};
 
 			base.Initialize();
 		}
@@ -86,6 +93,12 @@ namespace gameProjectWindows
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			// TODO: Add your drawing code here
+			spriteBatch.Begin();
+
+			myWorld.Draw(spriteBatch);
+
+			spriteBatch.End();
+
 
 			base.Draw(gameTime);
 		}
