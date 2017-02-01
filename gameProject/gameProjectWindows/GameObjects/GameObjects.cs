@@ -10,7 +10,9 @@ namespace gameProjectWindows.GameObjects
 {
 	public class GameObjects
 	{
-		public Vector2 Position;
+		public Vector2 PositionVect;
+		public Rectangle PositionRect;
+
 		public Texture2D Texture;
 
 		public GameObjects()
@@ -19,7 +21,7 @@ namespace gameProjectWindows.GameObjects
 
 		public virtual void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(Texture, Position, Color.White);
+			spriteBatch.Draw(Texture, PositionVect, Color.White);
 		}
 	}
 }

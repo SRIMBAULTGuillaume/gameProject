@@ -26,6 +26,7 @@ namespace gameProjectWindows
 
 			graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
 			graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+			this.IsMouseVisible = true;
 		}
 
 		/// <summary>
@@ -39,7 +40,7 @@ namespace gameProjectWindows
 			// TODO: Add your initialization logic here
 			myWorld = new World(WINDOW_WIDTH, WINDOW_HEIGHT, Content) {
 				Texture = Content.Load<Texture2D>("fontTmp"),
-				Position = new Vector2(0, 0)
+				PositionVect = new Vector2(0, 0)
 			};
 
 			base.Initialize();
