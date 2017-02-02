@@ -8,10 +8,29 @@ using System.Threading.Tasks;
 
 namespace gameProjectWindows.GameObjects
 {
-	public class GameObjects
+	public abstract class GameObjects
 	{
-		public Vector2 PositionVect;
-		public Rectangle PositionRect;
+		private Vector2 positionVect;
+		public Vector2 PositionVect
+		{
+			get { return positionVect; }
+			set {
+				isAVector = true;
+				positionVect = value;
+			}
+		}
+
+		private Rectangle positionRect;
+		public Rectangle PositionRect
+		{
+			get { return positionRect; }
+			set {
+				isAVector = false;
+				positionRect = value;
+			}
+		}
+
+		private bool isAVector;
 
 		public Texture2D Texture;
 
@@ -21,7 +40,10 @@ namespace gameProjectWindows.GameObjects
 
 		public virtual void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(Texture, PositionVect, Color.White);
+			if (isAVector)
+				spriteBatch.Draw(Texture, PositionVect, Color.White);
+			else
+				spriteBatch.Draw(Texture, PositionRect, Color.White);
 		}
 	}
 }

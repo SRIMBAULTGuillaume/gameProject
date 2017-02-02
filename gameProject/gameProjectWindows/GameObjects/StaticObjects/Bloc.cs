@@ -5,13 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gameProjectWindows.GameObjects
+namespace gameProjectWindows.GameObjects.StaticObjects
 {
 	public class Bloc : GameObjects
 	{
-		public Bloc(Texture2D Texture)
+		public enumIDBloc ID = enumIDBloc.NONE;
+
+		public Bloc()
 		{
-			this.Texture = Texture;
+			
 		}
+		
 	}
 }

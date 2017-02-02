@@ -1,4 +1,5 @@
 ﻿using gameProjectWindows.GameObjects;
+using gameProjectWindows.GameObjects.MovingObjects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +15,8 @@ namespace gameProjectWindows
 		SpriteBatch spriteBatch;
 
 		public World myWorld;
+
+		public Hero myHero;
 
 		public const int WINDOW_HEIGHT = 480;
 		public const int WINDOW_WIDTH = 704;
@@ -42,6 +45,8 @@ namespace gameProjectWindows
 				Texture = Content.Load<Texture2D>("fontTmp"),
 				PositionVect = new Vector2(0, 0)
 			};
+
+			
 
 			base.Initialize();
 		}
@@ -78,9 +83,10 @@ namespace gameProjectWindows
 				Exit();
 
 			// TODO: Add your update logic here
-
 			graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
 			graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+
+			myWorld.ReadFromKeyBoard();
 
 			base.Update(gameTime);
 		}
@@ -100,7 +106,7 @@ namespace gameProjectWindows
 
 			spriteBatch.End();
 
-
+			
 			base.Draw(gameTime);
 		}
 	}

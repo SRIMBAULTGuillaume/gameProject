@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using gameProjectWindows.GameObjects.MovingObjects;
+using gameProjectWindows.GameObjects.StaticObjects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,7 +15,9 @@ namespace gameProjectWindows.GameObjects
 	{
 		public Bloc[,] myMap;
 
-		public const int scale = 16;
+		public Hero myHero;
+
+		public int scale = 32;
 		public int width;
 		public int height;
 
@@ -22,9 +26,7 @@ namespace gameProjectWindows.GameObjects
 			this.width = width / scale;
 			this.height = height / scale;
 
-			Texture2D dirtTexture = Content.Load<Texture2D>("bloc_dirt");
-			Texture2D skyTexture = Content.Load<Texture2D>("bloc_sky");
-			IEnumerable<int> myRandomList = generateRandom(this.width, 4);
+			IEnumerable<int> myRandomList = GenerateRandom();
 
 			myMap = new Bloc[this.width, this.height];
 
@@ -32,35 +34,25 @@ namespace gameProjectWindows.GameObjects
 			{
 				for (int j = 0; j<this.height; j++)
 				{
-					if (j <= myRandomList.ElementAt<int>(i))
-					{
-						myMap[i, j] = new Bloc(dirtTexture);
-					} else
-					{
-						myMap[i, j] = new Bloc(skyTexture);
+					if (j <= myRandomList.ElementAt<int>(i)) {
+						myMap[i, j] = BlocFactory.Create(enumIDBloc.DIRT, Content);
+					} else {
+						myMap[i, j] = BlocFactory.Create(enumIDBloc.NONE, Content);
 					}
 					myMap[i, j].PositionRect = new Rectangle(i * scale, (this.height - 1 - j) * scale, scale, scale);
 				}
 			}
+
+			myHero = new Hero(this, Content.Load<Texture2D>("hero"), 0, 0);
 		}
-
-		public override void Draw(SpriteBatch spriteBatch)
-		{
-			base.Draw(spriteBatch);
-
-			for (int i = 0; i < this.width; i++)
-			{
-				for (int j = 0; j < this.height; j++)
-				{
-					//spriteBatch.Draw(myMap[i, j].Texture, new Rectangle(i*scale, (this.height-1-j)*scale, scale, scale), Color.White);
-					spriteBatch.Draw(myMap[i, j].Texture, myMap[i, j].PositionRect, Color.White);
-				}
-			}
-		}
-
-		private IEnumerable<int> generateRandom(int width, int start)
+		
+		/// <summary>
+		/// Generate a world
+		/// </summary>
+		private IEnumerable<int> GenerateRandom()
 		{
 			Random myRand = new Random();
+			int start = height / 3;
 			int number = start + myRand.Next(-1, 1);
 			/*int previousNumber = number + myRand.Next(-1, 1);
 			int previousPreviousNumber;*/
@@ -80,7 +72,26 @@ namespace gameProjectWindows.GameObjects
 					number = max;
 				yield return number;
 			}
+		}
 
+		public void ReadFromKeyBoard()
+		{
+
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			base.Draw(spriteBatch);
+
+			for (int i = 0; i < this.width; i++)
+			{
+				for (int j = 0; j < this.height; j++)
+				{
+					spriteBatch.Draw(myMap[i, j].Texture, myMap[i, j].PositionRect, Color.White);
+				}
+			}
+
+			myHero.Draw(spriteBatch);
 		}
 	}
 }

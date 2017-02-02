@@ -39,8 +39,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="GameObjects\Bloc.cs" />
+    <Compile Include="GameObjects\StaticObjects\Bloc.cs" />
     <Compile Include="GameObjects\GameObjects.cs" />
+    <Compile Include="GameObjects\MovingObjects\Hero.cs" />
+    <Compile Include="GameObjects\MovingObjects\Movables.cs" />
+    <Compile Include="GameObjects\StaticObjects\BlocFactory.cs" />
+    <Compile Include="GameObjects\StaticObjects\SomeBlocs.cs" />
     <Compile Include="GameObjects\World.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,6 +64,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\fontTmp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\hero.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
