@@ -14,6 +14,7 @@ namespace gameProjectWindows.GameObjects.StaticObjects
 		{
 			this.Texture = Content.Load<Texture2D>("bloc_sky");
 			this.ID = enumIDBloc.NONE;
+			this.blocking = false;
 		}
 	}
 
@@ -24,6 +25,7 @@ namespace gameProjectWindows.GameObjects.StaticObjects
 		{
 			this.Texture = Content.Load<Texture2D>("bloc_dirt");
 			this.ID = enumIDBloc.DIRT;
+			this.blocking = true;
 		}
 	}
 }

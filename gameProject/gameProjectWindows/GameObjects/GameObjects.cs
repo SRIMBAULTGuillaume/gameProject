@@ -10,7 +10,7 @@ namespace gameProjectWindows.GameObjects
 {
 	public abstract class GameObjects
 	{
-		private Vector2 positionVect;
+		protected Vector2 positionVect;
 		public Vector2 PositionVect
 		{
 			get { return positionVect; }
@@ -20,7 +20,7 @@ namespace gameProjectWindows.GameObjects
 			}
 		}
 
-		private Rectangle positionRect;
+		protected Rectangle positionRect;
 		public Rectangle PositionRect
 		{
 			get { return positionRect; }
@@ -30,7 +30,7 @@ namespace gameProjectWindows.GameObjects
 			}
 		}
 
-		private bool isAVector;
+		protected bool isAVector;
 
 		public Texture2D Texture;
 

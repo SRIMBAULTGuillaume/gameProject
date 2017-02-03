@@ -86,7 +86,8 @@ namespace gameProjectWindows
 			graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
 			graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
 
-			myWorld.ReadFromKeyBoard();
+			myWorld.ReadFromKeyBoard(Keyboard.GetState());
+			myWorld.UpdateElements(gameTime);
 
 			base.Update(gameTime);
 		}

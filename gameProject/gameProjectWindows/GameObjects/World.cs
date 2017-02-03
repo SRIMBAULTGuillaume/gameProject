@@ -3,11 +3,13 @@ using gameProjectWindows.GameObjects.StaticObjects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static gameProjectWindows.GameObjects.MovingObjects.Movables;
 
 namespace gameProjectWindows.GameObjects
 {
@@ -16,6 +18,8 @@ namespace gameProjectWindows.GameObjects
 		public Bloc[,] myMap;
 
 		public Hero myHero;
+
+		public Vector2 g = new Vector2(0, -9.81F);
 
 		public int scale = 32;
 		public int width;
@@ -74,9 +78,20 @@ namespace gameProjectWindows.GameObjects
 			}
 		}
 
-		public void ReadFromKeyBoard()
+		public void ReadFromKeyBoard(KeyboardState state)
 		{
+			if (state.IsKeyDown(Keys.Q) || state.IsKeyDown(Keys.Left)) {
+				myHero.direction = enumDirection.LEFT;
+			} else if (state.IsKeyDown(Keys.D) || state.IsKeyDown(Keys.Right)) {
+				myHero.direction = enumDirection.RIGHT;
+			}
 
+			if (state.IsKeyDown(Keys.Space)) {
+				myHero.Jump();
+			}
+
+			myHero.SetHorizontalSpeed();
+			myHero.direction = enumDirection.NONE;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -92,6 +107,11 @@ namespace gameProjectWindows.GameObjects
 			}
 
 			myHero.Draw(spriteBatch);
+		}
+
+		public void UpdateElements(GameTime gameTime)
+		{
+			myHero.Update(gameTime);
 		}
 	}
 }
