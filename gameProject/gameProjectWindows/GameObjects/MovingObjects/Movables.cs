@@ -45,7 +45,7 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 		protected Bloc GetSolidBlocUnderMe()
 		{
 			for (int i = (myWorld.height) - (this.positionRect.Y / myWorld.scale) - 3; i >= 0; i--) {
-				if (myWorld.myMap[this.positionRect.X / myWorld.scale, i].ID == enumIDBloc.DIRT) {
+				if (myWorld.myMap[this.positionRect.X / myWorld.scale, i].blocking) {
 					return (myWorld.myMap[this.positionRect.X / myWorld.scale, i]);
 				}
 			}
@@ -88,18 +88,18 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 
 		public void Jump()
 		{
-			if (GetBlocUnderMe().ID == enumIDBloc.DIRT)
+			if (GetBlocUnderMe().blocking)
 				this.speed.Y = myWorld.scale + myWorld.scale/4;
 		}
 
 		public void Update(GameTime gameTime)
 		{
 			if (this.positionRect.X != 0 || this.positionRect.Y != 0) {
-				if (GetBlocUnderMe().ID != enumIDBloc.DIRT)
+				if (GetBlocUnderMe().ID != enumIDBloc.DIRT)	{
 					//this.speed += myWorld.g;
 					//this.speed += new Vector2(0, -myWorld.scale);
 					this.speed += new Vector2(0, -(GetSolidBlocUnderMe().PositionRect.Y - this.positionRect.Y - myWorld.scale * 2));
-				
+				}
 				Console.WriteLine(GetBlocUnderMe());
 				Console.WriteLine("My pos X = " + this.positionRect.X + ", Y = " + this.positionRect.Y);
 				Console.WriteLine(GetSolidBlocUnderMe().PositionRect.Y - this.positionRect.Y - myWorld.scale*2);
@@ -110,12 +110,20 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 
 		private void Move()
 		{
+			int previousX = positionRect.X;
+			int previousY = positionRect.Y;
+
 			this.positionRect.X += (int)this.speed.X;
 			if (positionRect.X > myWorld.width * (myWorld.scale - 1))
 				positionRect.X = myWorld.width * (myWorld.scale - 1);
 			else if (positionRect.X < 0)
 				positionRect.X = 0;
 			this.positionRect.Y -= (int)this.speed.Y;
+
+			if (myWorld.IsCollided(this)) {
+				positionRect.X = previousX;
+				positionRect.Y = previousY;
+			}
 
 			if (GetBlocUnderMe().ID == enumIDBloc.DIRT)
 				this.speed.Y = 0;

@@ -38,10 +38,12 @@ namespace gameProjectWindows.GameObjects
 			{
 				for (int j = 0; j<this.height; j++)
 				{
-					if (j <= myRandomList.ElementAt<int>(i)) {
-						myMap[i, j] = BlocFactory.Create(enumIDBloc.DIRT, Content);
+					if (j < myRandomList.ElementAt<int>(i)) {
+						myMap[i, j] = BlocFactory.Create(enumIDBloc.DIRT, Content, this);
+					} else if (j == myRandomList.ElementAt<int>(i)) {
+						myMap[i, j] = BlocFactory.Create(enumIDBloc.GRASS, Content, this);
 					} else {
-						myMap[i, j] = BlocFactory.Create(enumIDBloc.NONE, Content);
+						myMap[i, j] = BlocFactory.Create(enumIDBloc.NONE, Content, this);
 					}
 					myMap[i, j].PositionRect = new Rectangle(i * scale, (this.height - 1 - j) * scale, scale, scale);
 				}
@@ -78,6 +80,19 @@ namespace gameProjectWindows.GameObjects
 			}
 		}
 
+		public bool IsCollided(Movables mobile)
+		{
+			for (int i = 0; i < this.width; i++) {
+				for (int j = 0; j < this.height; j++) {
+					if (myMap[i, j].blocking && myMap[i, j].IsCollided(myHero)) {
+						Console.WriteLine("Collided");
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
 		public void ReadFromKeyBoard(KeyboardState state)
 		{
 			if (state.IsKeyDown(Keys.Q) || state.IsKeyDown(Keys.Left)) {
@@ -112,6 +127,8 @@ namespace gameProjectWindows.GameObjects
 		public void UpdateElements(GameTime gameTime)
 		{
 			myHero.Update(gameTime);
+
+			IsCollided(myHero);
 		}
 	}
 }

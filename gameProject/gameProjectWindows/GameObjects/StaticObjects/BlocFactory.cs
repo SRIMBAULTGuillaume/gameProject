@@ -9,14 +9,16 @@ namespace gameProjectWindows.GameObjects.StaticObjects
 {
 	static public class BlocFactory
 	{
-		public static Bloc Create(enumIDBloc id, ContentManager Content)
+		public static Bloc Create(enumIDBloc id, ContentManager Content, World myWorld)
 		{
 			switch (id)
 			{
 				case enumIDBloc.DIRT:
-					return new DirtBloc(Content);
+					return new DirtBloc(Content, myWorld);
+				case enumIDBloc.GRASS:
+					return new GrassBloc(Content, myWorld);
 				default:
-					return new SkyBloc(Content);
+					return new SkyBloc(Content, myWorld);
 			}
 		}
 
@@ -26,6 +28,7 @@ namespace gameProjectWindows.GameObjects.StaticObjects
 	public enum enumIDBloc
 	{
 		NONE = 0,
-		DIRT = 1
+		DIRT = 1,
+		GRASS = 2
 	}
 }
