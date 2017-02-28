@@ -76,7 +76,10 @@ namespace NoIdea.GameObjects
 				switch (direction){
 					case enumDirection.LEFT:
 						Console.WriteLine("On est dans un block (coté gauche)");
-						position.X = (int)Math.Floor(position.X) + ((int)Math.Floor(position.X) % world.scale);
+						position.X = (int)Math.Floor(position.X);
+						while (position.X%world.scale != 0) {
+							position.X++;
+						}
 						break;
 					case enumDirection.RIGHT:
 						Console.WriteLine("On est dans un block (coté droit)");
