@@ -15,6 +15,8 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 		public int size;
 		public enumDirection direction = enumDirection.NONE;
 
+		public bool hasJump = false;
+
 		protected int maximumSpeed;
 
 		public Vector2 speed;
@@ -45,51 +47,51 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 		protected Bloc GetSolidBlocUnderMe()
 		{
 			for (int i = (myWorld.height) - (this.positionRect.Y / myWorld.scale) - 3; i >= 0; i--) {
-				if (myWorld.myMap[this.positionRect.X / myWorld.scale, i].blocking) {
-					return (myWorld.myMap[this.positionRect.X / myWorld.scale, i]);
+				for (int j = this.positionRect.X / myWorld.scale; j<= this.positionRect.X / myWorld.scale + 1; j++) {
+					if (myWorld.myMap[j, i].blocking)
+						return myWorld.myMap[j, i];
 				}
 			}
 			return null;
 		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="scale">Permit to choose the number of pixels traveled during the deplacement</param>
+		
 		public void SetHorizontalSpeed()
 		{
-			switch (this.direction) {
-				case enumDirection.LEFT:
-					if (this.speed.X >= 0) {
-						this.speed.X = -0.4F * maximumSpeed;
-					} else if (-this.speed.X < maximumSpeed) {
-						this.speed.X -= 0.1F * maximumSpeed;
-					}
-					break;
-				case enumDirection.RIGHT:
-					if (this.speed.X <= 0){
-						this.speed.X = 0.4F * maximumSpeed;
-					} else if (this.speed.X < maximumSpeed) {
-						this.speed.X += 0.1F * maximumSpeed;
-					}
-					
-					break;
-				default:
-					this.speed.X = 0;
-					break;
-			}
+			if (GetBlocUnderMe().blocking) {
+				switch (this.direction) {
+					case enumDirection.LEFT:
+						if (this.speed.X >= 0) {
+							this.speed.X = -0.4F * maximumSpeed;
+						} else if (-this.speed.X < maximumSpeed) {
+							this.speed.X -= 0.1F * maximumSpeed;
+						}
+						break;
+					case enumDirection.RIGHT:
+						if (this.speed.X <= 0) {
+							this.speed.X = 0.4F * maximumSpeed;
+						} else if (this.speed.X < maximumSpeed) {
+							this.speed.X += 0.1F * maximumSpeed;
+						}
 
-			if (Math.Abs(this.speed.X) > maximumSpeed) {
-				this.speed.X = (this.speed.X > 0) ? maximumSpeed : -maximumSpeed;
-			}
+						break;
+					default:
+						this.speed.X = 0;
+						break;
+				}
 
-
+				if (Math.Abs(this.speed.X) > maximumSpeed) {
+					this.speed.X = (this.speed.X > 0) ? maximumSpeed : -maximumSpeed;
+				}
+			} else
+				this.speed.X = 0;
 		}
 
 		public void Jump()
 		{
-			if (GetBlocUnderMe().blocking)
-				this.speed.Y = myWorld.scale + myWorld.scale/4;
+			if (GetBlocUnderMe().blocking && hasJump==false) {
+				this.speed.Y = myWorld.scale + myWorld.scale / 4;
+				this.hasJump = true;
+			}
 		}
 
 		public void Update(GameTime gameTime)
@@ -98,13 +100,16 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 				if (GetBlocUnderMe().ID != enumIDBloc.DIRT)	{
 					//this.speed += myWorld.g;
 					//this.speed += new Vector2(0, -myWorld.scale);
-					this.speed += new Vector2(0, -(GetSolidBlocUnderMe().PositionRect.Y - this.positionRect.Y - myWorld.scale * 2));
+					//this.speed += new Vector2(0, -(GetSolidBlocUnderMe().PositionRect.Y - this.positionRect.Y - myWorld.scale * 2));
 				}
 				Console.WriteLine(GetBlocUnderMe());
 				Console.WriteLine("My pos X = " + this.positionRect.X + ", Y = " + this.positionRect.Y);
-				Console.WriteLine(GetSolidBlocUnderMe().PositionRect.Y - this.positionRect.Y - myWorld.scale*2);
+				Console.WriteLine(GetSolidBlocUnderMe().PositionRect.Y - this.positionRect.Y - myWorld.scale*this.size);
 			}
 
+			if (hasJump)
+				hasJump = false;
+			
 			Move();
 		}
 
@@ -113,21 +118,22 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 			int previousX = positionRect.X;
 			int previousY = positionRect.Y;
 
-			this.positionRect.X += (int)this.speed.X;
+			//this.positionRect.X += (int)(this.speed.X);
 			if (positionRect.X > myWorld.width * (myWorld.scale - 1))
 				positionRect.X = myWorld.width * (myWorld.scale - 1);
 			else if (positionRect.X < 0)
 				positionRect.X = 0;
-			this.positionRect.Y -= (int)this.speed.Y;
+
+			//this.positionRect.Y += 
 
 			if (myWorld.IsCollided(this)) {
 				positionRect.X = previousX;
 				positionRect.Y = previousY;
 			}
 
-			if (GetBlocUnderMe().ID == enumIDBloc.DIRT)
-				this.speed.Y = 0;
-			this.speed.Y = 0;
+			//if (GetBlocUnderMe().ID == enumIDBloc.DIRT)
+			//	this.speed.Y = 0;
+			//this.speed.Y = 0;
 		}
 
 		public enum enumDirection
@@ -136,5 +142,12 @@ namespace gameProjectWindows.GameObjects.MovingObjects
 			LEFT = 0,
 			RIGHT = 1
 		}
+
+		float VectorToAngle(Vector2 vector)
+		{
+			return (float)Math.Atan2(vector.Y, vector.X);
+		}
 	}
+
+
 }

@@ -19,7 +19,7 @@ namespace gameProjectWindows.GameObjects
 
 		public Hero myHero;
 
-		public Vector2 g = new Vector2(0, -9.81F);
+		public float g = 9.81F;
 
 		public int scale = 32;
 		public int width;
@@ -101,7 +101,7 @@ namespace gameProjectWindows.GameObjects
 				myHero.direction = enumDirection.RIGHT;
 			}
 
-			if (state.IsKeyDown(Keys.Space)) {
+			if (state.IsKeyDown(Keys.Space) || state.IsKeyDown(Keys.Z) || state.IsKeyDown(Keys.Up)) {
 				myHero.Jump();
 			}
 
