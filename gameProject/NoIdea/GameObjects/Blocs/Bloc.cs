@@ -25,19 +25,6 @@ namespace NoIdea.GameObjects.Blocs
 		public IDBlock ID { get; private set; }
 		public Boolean blocking;
 		
-		/// <param name="posX">Position in the 2D array</param>
-		/// <param name="posY">Position in the 2D array</param>
-		public Bloc(ContentManager Content, int posX, int posY, World myWorld)
-		{
-			this.texture = Content.Load<Texture2D>("bloc_dirt");
-			this.blocking = true;
-			this.myWorld = myWorld;
-
-			Position = new Vector2(posX * myWorld.scale, posY * myWorld.scale);
-
-			ID = IDBlock.DIRT;
-		}
-
 		public Bloc(Texture2D texture, int posX, int posY, IDBlock ID, bool blocking, World myWorld)
 		{
 			this.texture = texture;
@@ -58,7 +45,7 @@ namespace NoIdea.GameObjects.Blocs
 		{
 			if (texture != null) {
 				Vector2 reversedPos = new Vector2(Position.X, (myWorld.height* myWorld.scale) - Position.Y - texture.Height);
-
+				
 				spriteBatch.Draw(texture, reversedPos, Color.White);
 			}
 		}
@@ -69,16 +56,15 @@ namespace NoIdea.GameObjects.Blocs
 		}
 	}
 
-	sealed class BlocFactory
+	class BlocFactory
 	{
 		private static BlocFactory instance = null;
 		private static readonly object padlock = new object();
 
-		private static ContentManager Content = null;
+		private ContentManager Content;
 
 		private BlocFactory()
 		{
-
 		}
 
 		public static BlocFactory GetInstance()
@@ -102,7 +88,7 @@ namespace NoIdea.GameObjects.Blocs
 					}
 				}
 			}
-			Content = new ContentManager(Content.ServiceProvider, @"Content\Blocs");
+			this.Content = new ContentManager(Content.ServiceProvider, @"Content\Blocs");
 		}
 
 		public Bloc CreateBlock(int posX, int posY, IDBlock ID, World myWorld)
@@ -119,11 +105,11 @@ namespace NoIdea.GameObjects.Blocs
 				case IDBlock.NONE:
 					return new Bloc(posX, posY, ID, blocking, myWorld);
 				case IDBlock.DIRT:
-					texture = Content.Load<Texture2D>("bloc_dirt");
+					texture = Content.Load<Texture2D>("dirt");
 					blocking = true;
 					break;
 				case IDBlock.GRASS:
-					texture = Content.Load<Texture2D>("bloc_grass");
+					texture = Content.Load<Texture2D>("grass");
 					blocking = true;
 					break;
 			}

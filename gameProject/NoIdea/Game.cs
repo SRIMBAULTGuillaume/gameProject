@@ -28,7 +28,7 @@ namespace NoIdea
 
 			this.graphics.PreferredBackBufferWidth = WINDOW_WIDTH * worldScale;
 			this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * worldScale;
-			this.IsMouseVisible = true;
+			this.IsMouseVisible = false;
 			this.Window.Title = "Game";
 		}
 
@@ -95,7 +95,7 @@ namespace NoIdea
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
 
-			this.world.Draw(spriteBatch);
+			this.world.Draw(spriteBatch, Mouse.GetState());
 
 			spriteBatch.End();
 

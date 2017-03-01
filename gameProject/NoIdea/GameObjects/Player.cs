@@ -36,9 +36,10 @@ namespace NoIdea.GameObjects
 						break;
 					case EDirection.RIGHT:
 						value = (int)Math.Floor(value);
-						while (value % (world.scale - texture.Width) != 0) {
+						while (value % world.scale != 0) {
 							value--;
 						}
+						value += (world.scale - texture.Width);
 						break;
 					case EDirection.NONE:
 						break;

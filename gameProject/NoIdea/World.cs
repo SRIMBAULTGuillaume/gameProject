@@ -17,6 +17,8 @@ namespace NoIdea
 		private Vector2 position;
 		private Texture2D texture;
 
+		private Texture2D textureArrow;
+
 		public int scale;
 
 		public int height;
@@ -50,6 +52,8 @@ namespace NoIdea
 			this.width = width;
 
 			this.texture = Content.Load<Texture2D>("font");
+
+			this.textureArrow = Content.Load<Texture2D>("arrow");
 
 			myMap = new Bloc[width, height];
 
@@ -95,7 +99,7 @@ namespace NoIdea
 			}
 		}
 
-		public void Draw(SpriteBatch spriteBatch)
+		public void Draw(SpriteBatch spriteBatch, MouseState state)
 		{
 			spriteBatch.Draw(texture, position, Color.White);
 
@@ -107,6 +111,8 @@ namespace NoIdea
 			}
 
 			this.player.Draw(spriteBatch);
+
+			spriteBatch.Draw(textureArrow, new Vector2((width * scale) - textureArrow.Width, (height * scale) - textureArrow.Height) / 2, null, Color.White, (float)Math.PI, new Vector2(0, 0), 1, SpriteEffects.None, 0);
 		}
 	}
 }
