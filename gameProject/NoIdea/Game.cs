@@ -78,7 +78,7 @@ namespace NoIdea
 				Exit();
 
 			// TODO: Add your update logic here
-			world.readFormKeyboard(Keyboard.GetState());
+			world.ReadFormKeyboard(Keyboard.GetState());
 			world.Update(gameTime);
 
 			base.Update(gameTime);

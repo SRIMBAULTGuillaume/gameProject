@@ -55,13 +55,20 @@ namespace NoIdea
 
 			World_Generator noise = new World_Generator(new Random().Next(0, 1000000000), height);
 
+			BlocFactory blockFactory = BlocFactory.GetInstance();
+			blockFactory.setContent(Content);
+
 			for (int x = 0; x < width; x++) {
 				int columnHeight = noise.getNoise(x, height - 2);
 				if (columnHeight <= 0)
 					columnHeight = 1;
 
 				for (int y = 0; y < columnHeight; y++) {
-					myMap[x, y] = new Bloc(Content, x, y, this);
+					if (y == columnHeight - 1) {
+						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.GRASS, this);
+					} else {
+						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.DIRT, this);
+					}
 				}
 			}
 			
@@ -74,17 +81,17 @@ namespace NoIdea
 			player.Update(gametime);
 		}
 
-		public void readFormKeyboard(KeyboardState state)
+		public void ReadFormKeyboard(KeyboardState state)
 		{
 			if (state.IsKeyDown(Keys.Space)) {
-				player.Jump();
+				player.Jump(new Vector2(0, scale));
 			}
 			if (state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.Q)) {
-				player.direction = enumDirection.LEFT;
+				player.Direction = EDirection.LEFT;
 			} else if (state.IsKeyDown(Keys.Right) || state.IsKeyDown(Keys.D)) {
-				player.direction = enumDirection.RIGHT;
+				player.Direction = EDirection.RIGHT;
 			} else {
-				player.direction = enumDirection.NONE;
+				player.Direction = EDirection.NONE;
 			}
 		}
 

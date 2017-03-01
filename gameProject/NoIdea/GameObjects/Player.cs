@@ -11,14 +11,68 @@ namespace NoIdea.GameObjects
 {
 	class Player
 	{
-		private Vector2 position;
 		private Texture2D texture;
 
-		private enumDirection Direction;
-		public enumDirection direction
+		private Vector2 _position;
+		public Vector2 Position	{
+			get { return _position; }
+			private set { _position = value; }
+		}
+		#region SET POSITION (X & Y)
+		private void SetX (float value)
 		{
-			get { return Direction; }
-			set { Direction = value; }
+			if (value < 1)
+				value = 0;
+			else if (value >= worldSize.X - texture.Width)
+				value = worldSize.X - texture.Width;
+			else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)] != null ||
+					 world.MyMap[(int)Math.Floor((value + texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)] != null) {
+				switch (Direction) {
+					case EDirection.LEFT:
+						value = (int)Math.Floor(value);
+						while (value%world.scale != 0) {
+							value++;
+						}
+						break;
+					case EDirection.RIGHT:
+						value = (int)Math.Floor(value);
+						while (value % (world.scale - texture.Width) != 0) {
+							value--;
+						}
+						break;
+					case EDirection.NONE:
+						break;
+				}
+			}
+
+			_position = new Vector2(value, _position.Y);
+		}
+		private void SetY (float value)
+		{
+
+			//If the player is in a block (during a jump) we block him on the ground
+			if ((world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor(value / world.scale)] != null ||
+				 world.MyMap[(int)Math.Floor((Position.X + texture.Width - 1) / world.scale), (int)Math.Floor(value / world.scale)] != null) && IsJumping) {
+				value = ((int)Math.Floor(value / world.scale) + 1) * (world.scale);
+				IsJumping = false;
+			}
+
+			if (value <= 0) {
+				value = 0;
+				IsJumping = false;
+			} else if (value > worldSize.Y - texture.Height) {
+				value = worldSize.Y - texture.Height;
+			}
+
+			_position = new Vector2(_position.X, value);
+		}
+		#endregion
+
+		private EDirection _direction;
+		public EDirection Direction
+		{
+			get { return _direction; }
+			set { _direction = value; }
 		}
 		
 		private World world;
@@ -27,9 +81,19 @@ namespace NoIdea.GameObjects
 
 		//Jumping
 		private long jumpTime = 0;
-		private bool isInJump = true;
+		private bool _isJumping;
+		public bool IsJumping
+		{
+			get { return _isJumping; }
+			private set {
+				if (!_isJumping && value) {
+					startingPosition = Position;
+					jumpTime = 0;
+				}
+				_isJumping = value;
+			}
+		}
 		private Vector2 startingPosition;
-
 		private Vector2 jumpSpeed;
 
 		public Player(int radius, Color color, World world, int width, int height, ContentManager content)
@@ -40,19 +104,15 @@ namespace NoIdea.GameObjects
 			//texture = content.Load<Texture2D>("player");
 			texture = content.Load<Texture2D>("hero");
 
-			position = new Vector2(0, height);
-			startingPosition = position;
+			Position = new Vector2(0, height);
+			startingPosition = Position;
 		}
 
-		public void Jump()
+		public void Jump(Vector2 jumpSpeed)
 		{
-			if (!isInJump) {
-				startingPosition = position;
-				jumpTime = 0;
-
-				isInJump = true;
-				jumpSpeed = new Vector2(0, world.scale);
-
+			if (!IsJumping) {
+				IsJumping = true;
+				this.jumpSpeed = jumpSpeed;
 			}
 		}
 
@@ -60,72 +120,34 @@ namespace NoIdea.GameObjects
 		{
 			jumpTime += (int)gameTime.ElapsedGameTime.Milliseconds;
 
-			float t = (float)jumpTime / 1000 * 7;
+			float t = (float)jumpTime / 1000 * 8;
 
-			if (isInJump) {
-				position.Y = ((-(1 / (float)2) * world.g * (float)Math.Pow(t, 2)) + (jumpSpeed.Y * t) + startingPosition.Y);
+			if (IsJumping) {
+				SetY((-(1 / (float)2) * world.g * (float)Math.Pow(t, 2)) + (jumpSpeed.Y * t) + startingPosition.Y);
 			}
-			position.X += (float)gameTime.ElapsedGameTime.Milliseconds/1000 * (int)direction;
-
-			if (position.X < 1)
-				position.X = 0;
-			else if (position.X >= worldSize.X - texture.Width)
-				position.X = worldSize.X - texture.Width;
-			else if (world.MyMap[(int)Math.Floor((position.X - 1) / world.scale), (int)Math.Floor(position.Y / world.scale)] != null ||
-					 world.MyMap[(int)Math.Floor((position.X + texture.Width) / world.scale), (int)Math.Floor(position.Y / world.scale)] != null) {
-				switch (direction){
-					case enumDirection.LEFT:
-						Console.WriteLine("On est dans un block (coté gauche)");
-						position.X = (int)Math.Floor(position.X) + ((int)Math.Floor(position.X) % world.scale);
-						break;
-					case enumDirection.RIGHT:
-						Console.WriteLine("On est dans un block (coté droit)");
-						position.X = (int)Math.Floor(position.X) - (int)Math.Floor(position.X) % world.scale + world.scale - texture.Width;
-						break;
-					case enumDirection.NONE:
-						break;
-				}
-			}
-
-			//If the player is in a block (during a jump) we block him on the ground
-			if ((world.MyMap[(int)Math.Floor(position.X / world.scale), (int)Math.Floor(position.Y / world.scale)] != null ||
-				 world.MyMap[(int)Math.Floor((position.X + texture.Width - 1) / world.scale), (int)Math.Floor(position.Y / world.scale)] != null) && isInJump) {
-				position.Y = ((int)Math.Floor(position.Y / world.scale) + 1) * (world.scale);
-				isInJump = false;
-			}
-
-			if ((world.MyMap[(int)Math.Floor(position.X / world.scale), (int)Math.Floor((position.Y-1) / world.scale)] == null &&
-				 world.MyMap[(int)Math.Floor((position.X + texture.Width - 1) / world.scale), (int)Math.Floor((position.Y - 1) / world.scale)] == null) && !isInJump) {
-				startingPosition = position;
-				jumpTime = 0;
-
-				isInJump = true;
-				jumpSpeed = new Vector2(0, 0);
-			}
+			SetX(Position.X + (float)gameTime.ElapsedGameTime.Milliseconds/1000 * (int)Direction);
 			
+			//If there is no bloc under the player, he falls
+			if ((world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((Position.Y-1) / world.scale)] == null &&
+				 world.MyMap[(int)Math.Floor((Position.X + texture.Width - 1) / world.scale), (int)Math.Floor((Position.Y - 1) / world.scale)] == null) && !IsJumping) {
 
-
-			if (position.Y < 0) {
-				position.Y = 0;
-				isInJump = false;
-			} else if (position.Y > worldSize.Y - texture.Height) {
-				position.Y = worldSize.Y - texture.Height;
+				this.Jump(new Vector2(0, 0));
 			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			Vector2 reversedPos = new Vector2(position.X, worldSize.Y - position.Y - texture.Height);
+			Vector2 reversedPos = new Vector2(Position.X, worldSize.Y - Position.Y - texture.Height);
 			spriteBatch.Draw(texture, reversedPos, Color.White);
 		}
 
 		public override string ToString()
 		{
-			return "X = " + position.X + "; Y = " + position.Y;
+			return "X = " + Position.X + "; Y = " + Position.Y;
 		}
 	}
 
-	public enum enumDirection
+	public enum EDirection
 	{
 		//value in pixel/s
 		NONE = 0,
