@@ -87,7 +87,7 @@ namespace NoIdea
 
 		public void ReadFormKeyboard(KeyboardState state)
 		{
-			if (state.IsKeyDown(Keys.Space)) {
+			if (state.IsKeyDown(Keys.Space) || state.IsKeyDown(Keys.Up) || state.IsKeyDown(Keys.Z)) {
 				player.Jump(new Vector2(0, scale));
 			}
 			if (state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.Q)) {
@@ -112,7 +112,24 @@ namespace NoIdea
 
 			this.player.Draw(spriteBatch);
 
-			spriteBatch.Draw(textureArrow, new Vector2((width * scale) - textureArrow.Width, (height * scale) - textureArrow.Height) / 2, null, Color.White, (float)Math.PI, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+			if (state.X > 0 && state.X < width*scale && state.Y > 0 && state.Y < height * scale) {
+
+				Vector2 posPlayerCenter = new Vector2((player.Position.X + player.Texture.Width/2), (height * scale - player.Position.Y - player.Texture.Height / 2));
+				Vector2 posArrowCenter = new Vector2(textureArrow.Width / 2, textureArrow.Height / 2);
+				
+				Vector2 direction = new Vector2(state.X, state.Y) - posPlayerCenter;
+
+				int circleRadius = (int)(scale * 1.2f);
+
+				posArrowCenter = posPlayerCenter + Vector2.Normalize(direction) * circleRadius;
+
+				float angle = (float)Math.Atan2(direction.Y, direction.X) + (float)(Math.PI * 0.5f);
+
+
+				spriteBatch.Draw(	textureArrow, posArrowCenter, null, Color.White,
+									angle,
+									new Vector2(textureArrow.Width/2, textureArrow.Height/2), 1, SpriteEffects.None, 0);
+			}
 		}
 	}
 }
