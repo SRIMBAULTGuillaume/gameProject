@@ -20,6 +20,8 @@ namespace NoIdea
 		private Texture2D textureArrow;
 		private Texture2D textureArrowGreen;
 
+		private Texture2D textureHover;
+
 		public int scale;
 
 		public int height;
@@ -53,8 +55,8 @@ namespace NoIdea
 			this.width = width;
 
 			this.texture = Content.Load<Texture2D>("font");
-
 			this.textureArrow = Content.Load<Texture2D>("arrow");
+			this.textureHover = Content.Load<Texture2D>("hover");
 
 			myMap = new Bloc[width, height];
 
@@ -68,8 +70,10 @@ namespace NoIdea
 				if (columnHeight <= 0)
 					columnHeight = 1;
 
-				for (int y = 0; y < columnHeight; y++) {
-					if (y == columnHeight - 1) {
+				for (int y = 0; y < height; y++) {
+					if (y >= columnHeight) {
+						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.NONE, this);
+					} else if (y == columnHeight - 1) {
 						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.GRASS, this);
 					} else {
 						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.DIRT, this);
@@ -150,7 +154,13 @@ namespace NoIdea
 										new Vector2(textureArrow.Width/2, textureArrow.Height/2), 1, SpriteEffects.None, 0);
 				}
 
-				
+
+
+				Vector2 posHover = new Vector2(state.X - (state.X%scale), state.Y - (state.Y % scale));
+
+				spriteBatch.Draw(	textureHover, posHover, null, Color.White, 0,
+									new Vector2((textureHover.Width - textureArrow.Width)/2, (textureHover.Width - textureArrow.Width)/2), 1, SpriteEffects.None, 0);
+
 			}
 
 		}

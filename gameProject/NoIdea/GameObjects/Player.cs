@@ -30,8 +30,8 @@ namespace NoIdea.GameObjects
 				value = 0;
 			else if (value >= worldSize.X - Texture.Width)
 				value = worldSize.X - Texture.Width;
-			else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)] != null ||
-					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)] != null) {
+			else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
+					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking) {
 				switch (Direction) {
 					case EDirection.LEFT:
 						value = (int)Math.Floor(value);
@@ -57,8 +57,8 @@ namespace NoIdea.GameObjects
 		{
 
 			//If the player is in a block (during a jump) we block him on the ground
-			if ((world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor(value / world.scale)] != null ||
-				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor(value / world.scale)] != null) && IsJumping) {
+			if ((world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor(value / world.scale)].blocking ||
+				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor(value / world.scale)].blocking) && IsJumping) {
 				value = ((int)Math.Floor(value / world.scale) + 1) * (world.scale);
 				IsJumping = false;
 			}
@@ -114,8 +114,7 @@ namespace NoIdea.GameObjects
 		{
 			this.world = world;
 			this.worldSize = new Vector2(width, height);
-
-			//texture = content.Load<Texture2D>("player");
+			
 			Texture = content.Load<Texture2D>("hero");
 
 			Position = new Vector2(1, height-1);
@@ -143,8 +142,8 @@ namespace NoIdea.GameObjects
 			SetX(Position.X + (float)gameTime.ElapsedGameTime.Milliseconds/1000 * (int)Direction);
 			
 			//If there is no bloc under the player, he falls
-			if ((world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((Position.Y-1) / world.scale)] == null &&
-				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((Position.Y - 1) / world.scale)] == null) && !IsJumping) {
+			if ((!world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((Position.Y-1) / world.scale)].blocking &&
+				 !world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((Position.Y - 1) / world.scale)].blocking) && !IsJumping) {
 
 				this.Jump(new Vector2(0, 0));
 			}

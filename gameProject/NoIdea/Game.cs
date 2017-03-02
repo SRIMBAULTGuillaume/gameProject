@@ -28,7 +28,7 @@ namespace NoIdea
 
 			this.graphics.PreferredBackBufferWidth = WINDOW_WIDTH * worldScale;
 			this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * worldScale;
-			this.IsMouseVisible = true;
+			this.IsMouseVisible = false;
 			this.Window.Title = "Game";
 		}
 
