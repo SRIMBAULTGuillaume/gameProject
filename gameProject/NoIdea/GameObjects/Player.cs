@@ -17,8 +17,7 @@ namespace NoIdea.GameObjects
 			get { return _texture; }
 			private set { _texture = value; }
 		}
-
-
+		
 		private Vector2 _position;
 		public Vector2 Position	{
 			get { return _position; }
@@ -81,7 +80,15 @@ namespace NoIdea.GameObjects
 			get { return _direction; }
 			set { _direction = value; }
 		}
-		
+
+		private float _m;
+		public float M
+		{
+			get { return _m; }
+			private set { _m = value; }
+		}
+
+
 		private World world;
 		
 		private Vector2 worldSize;
@@ -111,7 +118,8 @@ namespace NoIdea.GameObjects
 			//texture = content.Load<Texture2D>("player");
 			Texture = content.Load<Texture2D>("hero");
 
-			Position = new Vector2(0, height);
+			Position = new Vector2(1, height-1);
+			M = 60f;
 			startingPosition = Position;
 		}
 
@@ -127,10 +135,10 @@ namespace NoIdea.GameObjects
 		{
 			jumpTime += (int)gameTime.ElapsedGameTime.Milliseconds;
 
-			float t = (float)jumpTime / 1000 * 8;
+			float t = (float)jumpTime / 1000;
 
 			if (IsJumping) {
-				SetY((-(1 / (float)2) * world.g * (float)Math.Pow(t, 2)) + (jumpSpeed.Y * t) + startingPosition.Y);
+				SetY((-(1 / (float)2) * world.g * M * (float)Math.Pow(t, 2)) + (jumpSpeed.Y * t) + startingPosition.Y);
 			}
 			SetX(Position.X + (float)gameTime.ElapsedGameTime.Milliseconds/1000 * (int)Direction);
 			

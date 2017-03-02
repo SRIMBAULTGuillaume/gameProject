@@ -18,6 +18,7 @@ namespace NoIdea
 		private Texture2D texture;
 
 		private Texture2D textureArrow;
+		private Texture2D textureArrowGreen;
 
 		public int scale;
 
@@ -77,6 +78,19 @@ namespace NoIdea
 			}
 			
 			player = new Player(5, Color.Red, this, width * scale, height * scale, Content);
+
+			textureArrowGreen = new Texture2D(textureArrow.GraphicsDevice, textureArrow.Width, textureArrow.Height);
+
+			Color[] data = new Color[textureArrowGreen.Width * textureArrowGreen.Height];
+			textureArrow.GetData(data);
+
+			for (int i = 0; i < data.Length; i++)
+				if (data[i].R != 0) {
+					data[i].R = 80;
+					data[i].G = 200;
+					data[i].B = 32;
+				}
+			textureArrowGreen.SetData(data);
 		}
 		#endregion
 
@@ -88,7 +102,7 @@ namespace NoIdea
 		public void ReadFormKeyboard(KeyboardState state)
 		{
 			if (state.IsKeyDown(Keys.Space) || state.IsKeyDown(Keys.Up) || state.IsKeyDown(Keys.Z)) {
-				player.Jump(new Vector2(0, scale));
+				player.Jump(new Vector2(0, scale*7));
 			}
 			if (state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.Q)) {
 				player.Direction = EDirection.LEFT;
@@ -125,11 +139,20 @@ namespace NoIdea
 
 				float angle = (float)Math.Atan2(direction.Y, direction.X) + (float)(Math.PI * 0.5f);
 
+				if (state.LeftButton == ButtonState.Pressed) {
 
-				spriteBatch.Draw(	textureArrow, posArrowCenter, null, Color.White,
-									angle,
-									new Vector2(textureArrow.Width/2, textureArrow.Height/2), 1, SpriteEffects.None, 0);
+					spriteBatch.Draw(	textureArrowGreen, posArrowCenter, null, Color.White,
+										angle,
+										new Vector2(textureArrow.Width / 2, textureArrow.Height / 2), 1, SpriteEffects.None, 0);
+				} else {
+					spriteBatch.Draw(	textureArrow, posArrowCenter, null, Color.White,
+										angle,
+										new Vector2(textureArrow.Width/2, textureArrow.Height/2), 1, SpriteEffects.None, 0);
+				}
+
+				
 			}
+
 		}
 	}
 }
