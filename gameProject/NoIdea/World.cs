@@ -20,7 +20,10 @@ namespace NoIdea
 		private Texture2D textureArrow;
 		private Texture2D textureArrowGreen;
 
-		private Texture2D textureHover;
+		public Texture2D textureDirt { get; private set; }
+		public Texture2D textureGrass { get; private set; }
+		public Texture2D textureHover { get; private set; }
+		public Texture2D texturePlayer { get; private set; }
 
 		public int scale;
 
@@ -42,46 +45,29 @@ namespace NoIdea
 		/// <summary>
 		/// Set the position at (0, 0)
 		/// </summary>
-		public World(int scale, int height, int width, ContentManager Content) : this(scale, height, width, Content, new Vector2(0, 0)){
+		public World(int scale, int height, int width) : this(scale, height, width, new Vector2(0, 0)){
 
 		}
 
-		public World(int scale, int height, int width, ContentManager Content, Vector2 position)
+		public World(int scale, int height, int width, Vector2 position)
 		{
 			this.position = position;
 
 			this.scale = scale;
 			this.height = height;
 			this.width = width;
+		}
+		#endregion
 
+		public void Load(ContentManager Content, string blocsFolder = "Blocs")
+		{
 			this.texture = Content.Load<Texture2D>("font");
 			this.textureArrow = Content.Load<Texture2D>("arrow");
 			this.textureHover = Content.Load<Texture2D>("hover");
+			this.texturePlayer = Content.Load<Texture2D>("hero");
 
-			myMap = new Bloc[width, height];
-
-			World_Generator noise = new World_Generator(new Random().Next(0, 1000000000), height);
-
-			BlocFactory blockFactory = BlocFactory.GetInstance();
-			blockFactory.setContent(Content);
-
-			for (int x = 0; x < width; x++) {
-				int columnHeight = noise.getNoise(x, height - 2);
-				if (columnHeight <= 0)
-					columnHeight = 1;
-
-				for (int y = 0; y < height; y++) {
-					if (y >= columnHeight) {
-						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.NONE, this);
-					} else if (y == columnHeight - 1) {
-						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.GRASS, this);
-					} else {
-						myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.DIRT, this);
-					}
-				}
-			}
-			
-			player = new Player(5, Color.Red, this, width * scale, height * scale, Content);
+			this.textureDirt = Content.Load<Texture2D>(blocsFolder + @"\dirt");
+			this.textureGrass = Content.Load<Texture2D>(blocsFolder + @"\grass");
 
 			textureArrowGreen = new Texture2D(textureArrow.GraphicsDevice, textureArrow.Width, textureArrow.Height);
 
@@ -96,7 +82,37 @@ namespace NoIdea
 				}
 			textureArrowGreen.SetData(data);
 		}
-		#endregion
+
+		public void Init()
+		{
+			myMap = new Bloc[width, height];
+
+			World_Generator noise = new World_Generator(new Random().Next(0, 1000000000), height);
+
+			//BlocFactory blockFactory = BlocFactory.GetInstance();
+			//blockFactory.setContent(Content);
+
+			for (int x = 0; x < width; x++) {
+				int columnHeight = noise.getNoise(x, height - 2);
+				if (columnHeight <= 0)
+					columnHeight = 1;
+
+				for (int y = 0; y < height; y++) {
+					if (y >= columnHeight) {
+						//myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.NONE, this);
+						myMap[x, y] = new Bloc(x, y, IDBlock.NONE, this);
+					} else if (y == columnHeight - 1) {
+						//myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.GRASS, this);
+						myMap[x, y] = new Bloc(x, y, IDBlock.GRASS, this);
+					} else {
+						//myMap[x, y] = blockFactory.CreateBlock(x, y, IDBlock.DIRT, this);
+						myMap[x, y] = new Bloc(x, y, IDBlock.DIRT, this);
+					}
+				}
+			}
+			
+			player = new Player(texturePlayer, this);
+		}
 
 		public void Update(GameTime gametime)
 		{
@@ -136,6 +152,7 @@ namespace NoIdea
 				Vector2 posArrowCenter = new Vector2(textureArrow.Width / 2, textureArrow.Height / 2);
 				
 				Vector2 direction = new Vector2(state.X, state.Y) - posPlayerCenter;
+				Vector2 posHover = new Vector2(state.X - (state.X%scale), state.Y - (state.Y % scale));
 
 				int circleRadius = (int)(scale * 1.2f);
 
@@ -148,18 +165,19 @@ namespace NoIdea
 					spriteBatch.Draw(	textureArrowGreen, posArrowCenter, null, Color.White,
 										angle,
 										new Vector2(textureArrow.Width / 2, textureArrow.Height / 2), 1, SpriteEffects.None, 0);
+
+					myMap[(int)Math.Floor(posHover.X / scale), height - 1 - (int)Math.Floor(posHover.Y / scale)].ID = IDBlock.NONE;
+
 				} else {
 					spriteBatch.Draw(	textureArrow, posArrowCenter, null, Color.White,
 										angle,
 										new Vector2(textureArrow.Width/2, textureArrow.Height/2), 1, SpriteEffects.None, 0);
 				}
-
-
-
-				Vector2 posHover = new Vector2(state.X - (state.X%scale), state.Y - (state.Y % scale));
-
+				
 				spriteBatch.Draw(	textureHover, posHover, null, Color.White, 0,
 									new Vector2((textureHover.Width - textureArrow.Width)/2, (textureHover.Width - textureArrow.Width)/2), 1, SpriteEffects.None, 0);
+
+				Console.WriteLine(myMap[(int)Math.Floor(posHover.X/scale), height-1 - (int)Math.Floor(posHover.Y/scale)]);
 
 			}
 

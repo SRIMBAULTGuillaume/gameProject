@@ -30,6 +30,8 @@ namespace NoIdea
 			this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * worldScale;
 			this.IsMouseVisible = false;
 			this.Window.Title = "Game";
+
+			Console.WriteLine("Constructor");
 		}
 
 		/// <summary>
@@ -41,9 +43,15 @@ namespace NoIdea
 		protected override void Initialize()
 		{
 			// TODO: Add your initialization logic here
-			world = new World(worldScale, WINDOW_HEIGHT, WINDOW_WIDTH, Content);
+			world = new World(worldScale, WINDOW_HEIGHT, WINDOW_WIDTH);
+
+			Console.WriteLine("Init - 1");
 
 			base.Initialize();
+
+			world.Init();
+
+			Console.WriteLine("Init - 2");
 		}
 
 		/// <summary>
@@ -56,6 +64,9 @@ namespace NoIdea
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			// TODO: use this.Content to load your game content here
+			world.Load(this.Content);
+
+			Console.WriteLine("Load");
 		}
 
 		/// <summary>
@@ -81,7 +92,7 @@ namespace NoIdea
 			world.ReadFormKeyboard(Keyboard.GetState());
 			world.Update(gameTime);
 
-			base.Update(gameTime);
+			base.Update(gameTime);			
 		}
 
 		/// <summary>

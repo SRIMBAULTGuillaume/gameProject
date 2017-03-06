@@ -17,35 +17,64 @@ namespace NoIdea.GameObjects.Blocs
 			get { return _position; }
 			private set { _position = value; }
 		}
-
-		private Texture2D texture;
-
+		
 		private World myWorld;
 
-		public IDBlock ID { get; private set; }
+		private IDBlock _ID;
+		public IDBlock ID {
+			get {
+				return _ID;
+			}
+			set {
+				switch (value) {
+					case IDBlock.NONE:
+						this.blocking = false;
+						break;
+					case IDBlock.DIRT:
+					case IDBlock.GRASS:
+						this.blocking = true;
+						break;
+					default:
+						this.blocking = true;
+						break;
+				}
+				_ID = value;
+			}
+		}
+
 		public Boolean blocking;
 		
-		public Bloc(Texture2D texture, int posX, int posY, IDBlock ID, bool blocking, World myWorld)
+		public Bloc(int posX, int posY, IDBlock ID, World myWorld)
 		{
-			this.texture = texture;
 
 			Position = new Vector2(posX * myWorld.scale, posY * myWorld.scale);
 
 			this.ID = ID;
-			this.blocking = blocking;
 			this.myWorld = myWorld;
-		}
-
-		public Bloc(int posX, int posY, IDBlock ID, bool blocking, World myWorld) : this(null, posX, posY, ID, blocking, myWorld)
-		{
-
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
+			Texture2D texture;
+
+			switch(ID) {
+				case IDBlock.NONE:
+					texture = null;
+					break;
+				case IDBlock.DIRT:
+					texture = myWorld.textureDirt;
+					break;
+				case IDBlock.GRASS:
+					texture = myWorld.textureGrass;
+					break;
+				default:
+					texture = null;
+					break;
+			}
+
 			if (texture != null) {
 				Vector2 reversedPos = new Vector2(Position.X, (myWorld.height* myWorld.scale) - Position.Y - texture.Height);
-				
+
 				spriteBatch.Draw(texture, reversedPos, Color.White);
 			}
 		}
@@ -56,67 +85,66 @@ namespace NoIdea.GameObjects.Blocs
 		}
 	}
 
-	class BlocFactory
-	{
-		private static BlocFactory instance = null;
-		private static readonly object padlock = new object();
+	//class BlocFactory
+	//{
+	//	private static BlocFactory instance = null;
+	//	private static readonly object padlock = new object();
 
-		private ContentManager Content;
+	//	private ContentManager Content;
 
-		private BlocFactory()
-		{
-		}
+	//	private BlocFactory()
+	//	{
+	//	}
 
-		public static BlocFactory GetInstance()
-		{
-			if (instance == null) {
-				lock (padlock) {
-					if (instance == null) {
-						instance = new BlocFactory();
-					}
-				}
-			}
-			return instance;
-		}
+	//	public static BlocFactory GetInstance()
+	//	{
+	//		if (instance == null) {
+	//			lock (padlock) {
+	//				if (instance == null) {
+	//					instance = new BlocFactory();
+	//				}
+	//			}
+	//		}
+	//		return instance;
+	//	}
 
-		public void setContent(ContentManager Content)
-		{
-			if (instance == null) {
-				lock (padlock) {
-					if (instance == null) {
-						instance = new BlocFactory();
-					}
-				}
-			}
-			this.Content = new ContentManager(Content.ServiceProvider, @"Content\Blocs");
-		}
+	//	public void setContent(ContentManager Content)
+	//	{
+	//		if (instance == null) {
+	//			lock (padlock) {
+	//				if (instance == null) {
+	//					instance = new BlocFactory();
+	//				}
+	//			}
+	//		}
+	//		this.Content = new ContentManager(Content.ServiceProvider, @"Content\Blocs");
+	//	}
 
-		public Bloc CreateBlock(int posX, int posY, IDBlock ID, World myWorld)
-		{
-			Texture2D texture;
-			bool blocking = false;
-			if (Content == null) {
-				Console.WriteLine("Content not found {X : " + posX + "; Y : " + posY + "}");
-				ID = IDBlock.NONE;
-			}
+	//	public Bloc CreateBlock(int posX, int posY, IDBlock ID, World myWorld)
+	//	{
+	//		Texture2D texture;
+	//		if (Content == null) {
+	//			Console.WriteLine("Content not found {X : " + posX + "; Y : " + posY + "}");
+	//			ID = IDBlock.NONE;
+	//		}
 
-			switch (ID) {
-				default:
-				case IDBlock.NONE:
-					return new Bloc(posX, posY, ID, blocking, myWorld);
-				case IDBlock.DIRT:
-					texture = Content.Load<Texture2D>("dirt");
-					blocking = true;
-					break;
-				case IDBlock.GRASS:
-					texture = Content.Load<Texture2D>("grass");
-					blocking = true;
-					break;
-			}
+	//		switch (ID) {
+	//			default:
+	//			case IDBlock.NONE:
+	//				return new Bloc(posX, posY, ID, myWorld);
+	//			case IDBlock.DIRT:
+	//				texture = Content.Load<Texture2D>("dirt");
+	//				break;
+	//			case IDBlock.GRASS:
+	//				texture = Content.Load<Texture2D>("grass");
+	//				break;
+	//		}
 
-			return new Bloc(texture, posX, posY, ID, blocking, myWorld);
-		}
-	}
+	//		return new Bloc(texture, posX, posY, ID, myWorld);
+	//	}
+	//}
+
+
 
 	public enum IDBlock
 	{

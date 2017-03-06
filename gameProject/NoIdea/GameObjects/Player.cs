@@ -110,14 +110,14 @@ namespace NoIdea.GameObjects
 		private Vector2 startingPosition;
 		private Vector2 jumpSpeed;
 
-		public Player(int radius, Color color, World world, int width, int height, ContentManager content)
+		public Player(Texture2D texture, World world)
 		{
 			this.world = world;
-			this.worldSize = new Vector2(width, height);
+			this.worldSize = new Vector2(world.width * world.scale, world.height * world.scale);
 			
-			Texture = content.Load<Texture2D>("hero");
+			this.Texture = texture;
 
-			Position = new Vector2(1, height-1);
+			Position = new Vector2(1, worldSize.Y - 1);
 			M = 60f;
 			startingPosition = Position;
 		}
