@@ -87,9 +87,16 @@ namespace NoIdea
 		{
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
+			else if (Keyboard.GetState().IsKeyDown(Keys.R)) {
+				world = new World(worldScale, WINDOW_HEIGHT, WINDOW_WIDTH);
+				world.Load(this.Content);
+				world.Init();
+			}
 
 			// TODO: Add your update logic here
-			world.ReadFormKeyboard(Keyboard.GetState());
+			world.ReadFromKeyboard(Keyboard.GetState());
+			world.ReadFromMouse(Mouse.GetState());
+
 			world.Update(gameTime);
 
 			base.Update(gameTime);			
@@ -106,7 +113,7 @@ namespace NoIdea
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
 
-			this.world.Draw(spriteBatch, Mouse.GetState());
+			this.world.Draw(spriteBatch);
 
 			spriteBatch.End();
 

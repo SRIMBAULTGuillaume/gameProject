@@ -17,6 +17,10 @@ namespace NoIdea.GameObjects.Blocs
 			get { return _position; }
 			private set { _position = value; }
 		}
+		public Vector2 PositionCenter
+		{
+			get { return new Vector2(_position.X - (myWorld.scale / 2), _position.Y - (myWorld.scale / 2)); }
+		}
 		
 		private World myWorld;
 
@@ -73,7 +77,7 @@ namespace NoIdea.GameObjects.Blocs
 			}
 
 			if (texture != null) {
-				Vector2 reversedPos = new Vector2(Position.X, (myWorld.height* myWorld.scale) - Position.Y - texture.Height);
+				Vector2 reversedPos = new Vector2(Position.X, myWorld.sizePx.Y - Position.Y - texture.Height);
 
 				spriteBatch.Draw(texture, reversedPos, Color.White);
 			}

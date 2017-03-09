@@ -23,13 +23,17 @@ namespace NoIdea.GameObjects
 			get { return _position; }
 			private set { _position = value; }
 		}
+		public Vector2 PositionCenter
+		{
+			get { return new Vector2((Position.X - Texture.Width / 2), (Position.Y - (Texture.Height / 2))); }
+		}
 		#region SET POSITION (X & Y)
 		private void SetX (float value)
 		{
 			if (value < 1)
 				value = 0;
-			else if (value >= worldSize.X - Texture.Width)
-				value = worldSize.X - Texture.Width;
+			else if (value >= world.sizePx.X - Texture.Width)
+				value = world.sizePx.X - Texture.Width;
 			else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
 					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking) {
 				switch (Direction) {
@@ -66,8 +70,8 @@ namespace NoIdea.GameObjects
 			if (value <= 0) {
 				value = 0;
 				IsJumping = false;
-			} else if (value > worldSize.Y - Texture.Height) {
-				value = worldSize.Y - Texture.Height;
+			} else if (value > world.sizePx.Y - Texture.Height) {
+				value = world.sizePx.Y - Texture.Height;
 			}
 
 			_position = new Vector2(_position.X, value);
@@ -87,11 +91,10 @@ namespace NoIdea.GameObjects
 			get { return _m; }
 			private set { _m = value; }
 		}
-
-
-		private World world;
 		
-		private Vector2 worldSize;
+		private World world;
+
+
 
 		//Jumping
 		private long jumpTime = 0;
@@ -113,11 +116,10 @@ namespace NoIdea.GameObjects
 		public Player(Texture2D texture, World world)
 		{
 			this.world = world;
-			this.worldSize = new Vector2(world.width * world.scale, world.height * world.scale);
 			
 			this.Texture = texture;
 
-			Position = new Vector2(1, worldSize.Y - 1);
+			Position = new Vector2(1, world.sizePx.Y - 1);
 			M = 60f;
 			startingPosition = Position;
 		}
@@ -151,7 +153,7 @@ namespace NoIdea.GameObjects
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			Vector2 reversedPos = new Vector2(Position.X, worldSize.Y - Position.Y - Texture.Height);
+			Vector2 reversedPos = new Vector2(Position.X, world.sizePx.Y - Position.Y - Texture.Height);
 			spriteBatch.Draw(Texture, reversedPos, Color.White);
 		}
 
