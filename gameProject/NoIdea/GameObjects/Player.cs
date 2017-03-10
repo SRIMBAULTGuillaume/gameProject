@@ -35,7 +35,11 @@ namespace NoIdea.GameObjects
 			else if (value >= world.sizePx.X - Texture.Width)
 				value = world.sizePx.X - Texture.Width;
 			else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
-					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking) {
+					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
+					 world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor((Position.Y + Texture.Height - 1) / world.scale)].blocking ||
+					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor((Position.Y + Texture.Height - 1) / world.scale)].blocking ||
+					 world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor((Position.Y + Texture.Height/2) / world.scale)].blocking ||
+					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor((Position.Y + Texture.Height/2) / world.scale)].blocking  ) {
 				switch (Direction) {
 					case EDirection.LEFT:
 						value = (int)Math.Floor(value);
@@ -59,8 +63,21 @@ namespace NoIdea.GameObjects
 		}
 		private void SetY (float value)
 		{
+			if (value <= 0) {
+				value = 0;
+				IsJumping = false;
+			}
 
-			//If the player is in a block (during a jump) we block him on the ground
+			//If the player touch a block (ceiling), we block him and make him fall
+			if ((value + Texture.Height >= world.sizePx.Y ||
+				 world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((value + Texture.Height) / world.scale)].blocking ||
+				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((value + Texture.Height) / world.scale)].blocking) && IsJumping) {
+				value = ((int)Math.Floor((value + Texture.Height) / world.scale)) * (world.scale) - Texture.Height;
+				IsJumping = false;
+				this.Jump(new Vector2(0, 0));
+			}
+
+			//If the player is in a block (during a jump), we block him on the ground
 			if ((world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor(value / world.scale)].blocking ||
 				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor(value / world.scale)].blocking) && IsJumping) {
 				value = ((int)Math.Floor(value / world.scale) + 1) * (world.scale);
@@ -119,7 +136,7 @@ namespace NoIdea.GameObjects
 			
 			this.Texture = texture;
 
-			Position = new Vector2(1, world.sizePx.Y - 1);
+			Position = new Vector2(world.sizePx.X/2, world.sizePx.Y - Texture.Height*1.5f);
 			M = 60f;
 			startingPosition = Position;
 		}
@@ -144,8 +161,9 @@ namespace NoIdea.GameObjects
 			SetX(Position.X + (float)gameTime.ElapsedGameTime.Milliseconds/1000 * (int)Direction);
 			
 			//If there is no bloc under the player, he falls
-			if ((!world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((Position.Y-1) / world.scale)].blocking &&
-				 !world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((Position.Y - 1) / world.scale)].blocking) && !IsJumping) {
+			if (!(Position.Y - 1 <= 0) &&
+				(!world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((Position.Y-1) / world.scale)].blocking &&
+				 !world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((Position.Y - 1) / world.scale)].blocking)) {
 
 				this.Jump(new Vector2(0, 0));
 			}
@@ -159,7 +177,7 @@ namespace NoIdea.GameObjects
 
 		public override string ToString()
 		{
-			return "X = " + Position.X + "; Y = " + Position.Y;
+			return "Player : {X = " + Position.X + "; Y = " + Position.Y+ "}";
 		}
 	}
 

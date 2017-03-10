@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -85,70 +84,9 @@ namespace NoIdea.GameObjects.Blocs
 
 		public override string ToString()
 		{
-			return "{" + ID.ToString() + "}" + "X = " + Position.X + "; Y = " + Position.Y + "; BLOCKING : " + blocking;
+			return (ID.ToString() + " : {X = " + Position.X + "; Y = " + Position.Y + "}" + (blocking?"BLOCKING":"NOT BLOCKING"));
 		}
 	}
-
-	//class BlocFactory
-	//{
-	//	private static BlocFactory instance = null;
-	//	private static readonly object padlock = new object();
-
-	//	private ContentManager Content;
-
-	//	private BlocFactory()
-	//	{
-	//	}
-
-	//	public static BlocFactory GetInstance()
-	//	{
-	//		if (instance == null) {
-	//			lock (padlock) {
-	//				if (instance == null) {
-	//					instance = new BlocFactory();
-	//				}
-	//			}
-	//		}
-	//		return instance;
-	//	}
-
-	//	public void setContent(ContentManager Content)
-	//	{
-	//		if (instance == null) {
-	//			lock (padlock) {
-	//				if (instance == null) {
-	//					instance = new BlocFactory();
-	//				}
-	//			}
-	//		}
-	//		this.Content = new ContentManager(Content.ServiceProvider, @"Content\Blocs");
-	//	}
-
-	//	public Bloc CreateBlock(int posX, int posY, IDBlock ID, World myWorld)
-	//	{
-	//		Texture2D texture;
-	//		if (Content == null) {
-	//			Console.WriteLine("Content not found {X : " + posX + "; Y : " + posY + "}");
-	//			ID = IDBlock.NONE;
-	//		}
-
-	//		switch (ID) {
-	//			default:
-	//			case IDBlock.NONE:
-	//				return new Bloc(posX, posY, ID, myWorld);
-	//			case IDBlock.DIRT:
-	//				texture = Content.Load<Texture2D>("dirt");
-	//				break;
-	//			case IDBlock.GRASS:
-	//				texture = Content.Load<Texture2D>("grass");
-	//				break;
-	//		}
-
-	//		return new Bloc(texture, posX, posY, ID, myWorld);
-	//	}
-	//}
-
-
 
 	public enum IDBlock
 	{
