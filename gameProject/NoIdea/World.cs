@@ -133,15 +133,13 @@ namespace NoIdea
 			}
 		}
 
-		public void ReadFromMouse(MouseState state)
+		/*public void ReadFromMouse(MouseState state)
 		{
 			if (state.LeftButton == ButtonState.Pressed) {
 				RemoveBlock();
 			} else if (state.RightButton == ButtonState.Pressed) {
 				PlaceBlock();
 			}
-			Console.WriteLine("Mouse : {X : " + state.X + "; Y : " + state.Y + "}");
-			Console.WriteLine(player);
 			if (state.X > 0 && state.X < sizePx.X && state.Y > 0 && state.Y < sizePx.Y) {
 				posHover = new Vector2(state.X - (state.X % scale), state.Y - (state.Y % scale));
 				mousePos = new Vector2(state.Position.X, state.Position.Y);
@@ -176,6 +174,7 @@ namespace NoIdea
 			}
 
 		}
+		*/
 
 		public void PlaceBlock()
 		{

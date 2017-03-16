@@ -34,7 +34,7 @@ namespace NoIdea.GameObjects
 				value = 0;
 			else if (value >= world.sizePx.X - Texture.Width)
 				value = world.sizePx.X - Texture.Width;
-			else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
+			/*else if (world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
 					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor(Position.Y / world.scale)].blocking ||
 					 world.MyMap[(int)Math.Floor((value - 1) / world.scale), (int)Math.Floor((Position.Y + Texture.Height - 1) / world.scale)].blocking ||
 					 world.MyMap[(int)Math.Floor((value + Texture.Width) / world.scale), (int)Math.Floor((Position.Y + Texture.Height - 1) / world.scale)].blocking ||
@@ -57,7 +57,7 @@ namespace NoIdea.GameObjects
 					case EDirection.NONE:
 						break;
 				}
-			}
+			}*/
 
 			_position = new Vector2(value, _position.Y);
 		}
@@ -69,7 +69,7 @@ namespace NoIdea.GameObjects
 			}
 
 			//If the player touch a block (ceiling), we block him and make him fall
-			if ((value + Texture.Height >= world.sizePx.Y ||
+			/*if ((value + Texture.Height >= world.sizePx.Y ||
 				 world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((value + Texture.Height) / world.scale)].blocking ||
 				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((value + Texture.Height) / world.scale)].blocking) && IsJumping) {
 				value = ((int)Math.Floor((value + Texture.Height) / world.scale)) * (world.scale) - Texture.Height;
@@ -82,7 +82,7 @@ namespace NoIdea.GameObjects
 				 world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor(value / world.scale)].blocking) && IsJumping) {
 				value = ((int)Math.Floor(value / world.scale) + 1) * (world.scale);
 				IsJumping = false;
-			}
+			}*/
 
 			if (value <= 0) {
 				value = 0;
@@ -94,6 +94,35 @@ namespace NoIdea.GameObjects
 			_position = new Vector2(_position.X, value);
 		}
 		#endregion
+
+		private Vector2 _realPosition;
+		public Vector2 RealPosition
+		{
+			get { return _realPosition; }
+			private set { _realPosition = value; }
+		}
+
+		private void SetRX (float value)
+		{
+			if (value < 0)
+				value = 0;
+			else if (value > world.size.X - ((float)Texture.Width/world.scale))
+				value = world.size.X - ((float)Texture.Width / world.scale);
+
+			RealPosition = new Vector2(value, RealPosition.Y);
+		}
+		private void SetRY (float value)
+		{
+			if (value <= 0) {
+				value = 0;
+				IsJumping = false;
+			} else if (value > world.size.Y - ((float)Texture.Height/world.scale)) {
+				value = world.size.Y - ((float)Texture.Height / world.scale);
+			}
+
+			RealPosition = new Vector2(RealPosition.X, value);
+		}
+		
 
 		private EDirection _direction;
 		public EDirection Direction
@@ -110,9 +139,7 @@ namespace NoIdea.GameObjects
 		}
 		
 		private World world;
-
-
-
+		
 		//Jumping
 		private long jumpTime = 0;
 		private bool _isJumping;
@@ -121,13 +148,14 @@ namespace NoIdea.GameObjects
 			get { return _isJumping; }
 			private set {
 				if (!_isJumping && value) {
-					startingPosition = Position;
+					realStartingPosition = RealPosition;
 					jumpTime = 0;
 				}
 				_isJumping = value;
 			}
 		}
 		private Vector2 startingPosition;
+		private Vector2 realStartingPosition;
 		private Vector2 jumpSpeed;
 
 		public Player(Texture2D texture, World world)
@@ -136,9 +164,11 @@ namespace NoIdea.GameObjects
 			
 			this.Texture = texture;
 
-			Position = new Vector2(world.sizePx.X/2, world.sizePx.Y - Texture.Height*1.5f);
+			Position = new Vector2(1, 1);
+			RealPosition = new Vector2(1, world.size.Y-4);
 			M = 60f;
 			startingPosition = Position;
+			realStartingPosition = RealPosition;
 		}
 
 		public void Jump(Vector2 jumpSpeed)
@@ -156,28 +186,33 @@ namespace NoIdea.GameObjects
 			float t = (float)jumpTime / 1000;
 
 			if (IsJumping) {
-				SetY((-(1 / (float)2) * world.g * M * (float)Math.Pow(t, 2)) + (jumpSpeed.Y * t) + startingPosition.Y);
+				SetRY(((-(1 / (float)2) * world.g * (float)Math.Pow(t, 2)) + (jumpSpeed.Y * t) + realStartingPosition.Y));
 			}
-			SetX(Position.X + (float)gameTime.ElapsedGameTime.Milliseconds/1000 * (int)Direction);
+
+			SetRX(RealPosition.X + (float)gameTime.ElapsedGameTime.Milliseconds / 1000 * (int)Direction / world.scale*10);
+
+
 			
 			//If there is no bloc under the player, he falls
-			if (!(Position.Y - 1 <= 0) &&
-				(!world.MyMap[(int)Math.Floor(Position.X / world.scale), (int)Math.Floor((Position.Y-1) / world.scale)].blocking &&
-				 !world.MyMap[(int)Math.Floor((Position.X + Texture.Width - 1) / world.scale), (int)Math.Floor((Position.Y - 1) / world.scale)].blocking)) {
+			//if (RealPosition.Y > 0 &&
+			//	!world.MyMap[(int)Math.Ceiling(RealPosition.X), (int)Math.Ceiling(RealPosition.Y-1)].blocking &&
+			//	!world.MyMap[(int)Math.Ceiling(RealPosition.X + ((float)Texture.Width/world.scale) - 1), (int)Math.Ceiling(RealPosition.Y - 1)].blocking) {
 
-				this.Jump(new Vector2(0, 0));
-			}
+			//	this.Jump(new Vector2(0, 0));
+			//}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			Vector2 reversedPos = new Vector2(Position.X, world.sizePx.Y - Position.Y - Texture.Height);
+			Vector2 reversedPos = new Vector2(RealPosition.X * world.scale, (world.size.Y - RealPosition.Y) * world.scale - Texture.Height);
+
+			Console.WriteLine(this);
 			spriteBatch.Draw(Texture, reversedPos, Color.White);
 		}
 
 		public override string ToString()
 		{
-			return "Player : {X = " + Position.X + "; Y = " + Position.Y+ "}";
+			return "Player : {X= " + RealPosition.X + "; Y = " + RealPosition.Y + "}";
 		}
 	}
 

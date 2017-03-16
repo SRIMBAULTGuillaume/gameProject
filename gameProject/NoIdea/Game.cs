@@ -17,7 +17,7 @@ namespace NoIdea
 		public int worldScale = 32;
 
 		public const int WINDOW_HEIGHT = 20;
-		public const int WINDOW_WIDTH = 32;
+		public const int WINDOW_WIDTH = 100;
 
 		public World world;
 
@@ -28,8 +28,8 @@ namespace NoIdea
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			this.graphics.PreferredBackBufferWidth = WINDOW_WIDTH * worldScale;
-			this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * worldScale;
+			this.graphics.PreferredBackBufferWidth = 1024;
+			this.graphics.PreferredBackBufferHeight = 640;
 			this.IsMouseVisible = true;
 			this.Window.Title = "Game";
 		}
@@ -91,7 +91,7 @@ namespace NoIdea
 
 			// TODO: Add your update logic here
 			world.ReadFromKeyboard(Keyboard.GetState());
-			world.ReadFromMouse(Mouse.GetState());
+			//world.ReadFromMouse(Mouse.GetState());
 
 			world.Update(gameTime);
 

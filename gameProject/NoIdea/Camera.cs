@@ -21,7 +21,7 @@ namespace NoIdea
 
 		public void Update(GameTime gameTime, Game game)
 		{
-			center = new Vector2(game.world.player.Position.X + (game.world.player.Texture.Width / 2) - (game.world.sizePx.X/2), 0);
+			center = new Vector2(game.world.player.RealPosition.X*game.world.scale + (game.world.player.Texture.Width / 2) - (1024/2), 0);
 			transform = Matrix.CreateScale(new Vector3(1, 1, 0)) * Matrix.CreateTranslation(new Vector3(-center.X, -center.Y, 0));
 		}
 	}
