@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace NoIdea.GameObjects
 {
-	class Player
+	public class Player
 	{
 		private Texture2D _texture;
 		public Texture2D Texture
@@ -185,8 +185,8 @@ namespace NoIdea.GameObjects
 	{
 		//value in pixel/s
 		NONE = 0,
-		RIGHT = 100,
-		LEFT = -100
+		RIGHT = 120,
+		LEFT = -120
 		
 	}
 }

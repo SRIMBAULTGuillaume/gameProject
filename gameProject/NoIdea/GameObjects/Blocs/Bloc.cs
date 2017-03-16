@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NoIdea.GameObjects.Blocs
 {
-	class Bloc
+	public class Bloc
 	{
 		private Vector2 _position;
 		public Vector2 Position

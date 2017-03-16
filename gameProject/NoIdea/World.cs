@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace NoIdea
 {
-	class World
+	public class World
 	{
 		private Vector2 position;
 		private Texture2D texture;
@@ -48,7 +48,7 @@ namespace NoIdea
 			get { return myMap; }
 		}
 		
-		private Player player;
+		public Player player;
 		private Vector2 mousePos;
 		private float circleRadius;
 		//private bool leftClickPressed = false;
@@ -80,7 +80,7 @@ namespace NoIdea
 			this.texture = Content.Load<Texture2D>("font");
 			this.textureArrow = Content.Load<Texture2D>("arrow");
 			this.textureHover = Content.Load<Texture2D>("hover");
-			this.texturePlayer = Content.Load<Texture2D>("hero32");
+			this.texturePlayer = Content.Load<Texture2D>("hero");
 			this.textureCursor = Content.Load<Texture2D>("cursor");
 
 			this.textureDirt = Content.Load<Texture2D>(blocsFolder + @"\dirt");
@@ -170,10 +170,7 @@ namespace NoIdea
 					Console.WriteLine("Collided");
 					blocReachable = false;
 				}
-
 				
-
-
 			} else {
 				mousePos = new Vector2(0, 0);
 			}
@@ -204,8 +201,6 @@ namespace NoIdea
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(texture, position, Color.White);
-
 			for (int x = 0; x < size.X; x++) {
 				for (int y = 0; y < size.Y; y++) {
 					if (myMap[x, y] != null)
@@ -225,6 +220,11 @@ namespace NoIdea
 				spriteBatch.Draw(textureCursor, mousePos - new Vector2(textureCursor.Width, textureCursor.Height) / 2, Color.White);
 			}
 
+		}
+
+		public void DrawFont(SpriteBatch spriteBatch)
+		{
+			spriteBatch.Draw(texture, position, Color.White);
 		}
 	}
 }

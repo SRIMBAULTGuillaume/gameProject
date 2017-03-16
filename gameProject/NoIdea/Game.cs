@@ -19,7 +19,9 @@ namespace NoIdea
 		public const int WINDOW_HEIGHT = 20;
 		public const int WINDOW_WIDTH = 32;
 
-		private World world;
+		public World world;
+
+		Camera camera;
 
 		public Game()
 		{
@@ -28,10 +30,8 @@ namespace NoIdea
 
 			this.graphics.PreferredBackBufferWidth = WINDOW_WIDTH * worldScale;
 			this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * worldScale;
-			this.IsMouseVisible = false;
+			this.IsMouseVisible = true;
 			this.Window.Title = "Game";
-
-			Console.WriteLine("Constructor");
 		}
 
 		/// <summary>
@@ -44,14 +44,12 @@ namespace NoIdea
 		{
 			// TODO: Add your initialization logic here
 			world = new World(worldScale, WINDOW_HEIGHT, WINDOW_WIDTH);
-
-			Console.WriteLine("Init - 1");
+			
+			camera = new Camera(GraphicsDevice.Viewport);
 
 			base.Initialize();
 
 			world.Init();
-
-			Console.WriteLine("Init - 2");
 		}
 
 		/// <summary>
@@ -65,8 +63,6 @@ namespace NoIdea
 
 			// TODO: use this.Content to load your game content here
 			world.Load(this.Content);
-
-			Console.WriteLine("Load");
 		}
 
 		/// <summary>
@@ -99,6 +95,7 @@ namespace NoIdea
 
 			world.Update(gameTime);
 
+			camera.Update(gameTime, this);
 			base.Update(gameTime);			
 		}
 
@@ -112,6 +109,13 @@ namespace NoIdea
 
 			// TODO: Add your drawing code here
 			spriteBatch.Begin();
+
+			this.world.DrawFont(spriteBatch);
+
+			spriteBatch.End();
+
+
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
 
 			this.world.Draw(spriteBatch);
 
