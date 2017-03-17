@@ -122,7 +122,7 @@ namespace NoIdea
 		public void ReadFromKeyboard(KeyboardState state)
 		{
 			if (state.IsKeyDown(Keys.Space) || state.IsKeyDown(Keys.Up) || state.IsKeyDown(Keys.Z)) {
-				player.Jump(new Vector2(0, scale*7));
+				player.Jump(new Vector2(0, 5));
 			}
 			if (state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.Q)) {
 				player.Direction = EDirection.LEFT;
@@ -133,36 +133,33 @@ namespace NoIdea
 			}
 		}
 
-		/*public void ReadFromMouse(MouseState state)
+		public void ReadFromMouse(MouseState state, Camera cam)
 		{
-			if (state.LeftButton == ButtonState.Pressed) {
-				RemoveBlock();
-			} else if (state.RightButton == ButtonState.Pressed) {
-				PlaceBlock();
-			}
+			
 			if (state.X > 0 && state.X < sizePx.X && state.Y > 0 && state.Y < sizePx.Y) {
-				posHover = new Vector2(state.X - (state.X % scale), state.Y - (state.Y % scale));
-				mousePos = new Vector2(state.Position.X, state.Position.Y);
+
+				mousePos = new Vector2(state.Position.X, state.Position.Y) + cam.center;
+				posHover = new Vector2((int)Math.Floor(mousePos.X/scale), (int)Math.Floor(mousePos.Y/scale));
 
 				bool collided = false;
 				Vector2[] hoverCorners = new Vector2[4] {   new Vector2(posHover.X, posHover.Y),
 															new Vector2(posHover.X + textureHover.Width, posHover.Y),
 															new Vector2(posHover.X, posHover.Y + textureHover.Height),
 															new Vector2(posHover.X + textureHover.Width, posHover.Y + textureHover.Height)};
-				for (int i = 0; i < 4; i++) {
-					if (hoverCorners[i].X > player.Position.X && hoverCorners[i].X < player.Position.X + player.Texture.Width &&
-						sizePx.Y - hoverCorners[i].Y > player.Position.Y && sizePx.Y - hoverCorners[i].Y < player.Position.Y + player.Texture.Height) {
-						collided = true;
-						break;
-					}
-				}
+				//for (int i = 0; i < 4; i++) {
+				//	if (hoverCorners[i].X > player.Position.X && hoverCorners[i].X < player.Position.X + player.Texture.Width &&
+				//		sizePx.Y - hoverCorners[i].Y > player.Position.Y && sizePx.Y - hoverCorners[i].Y < player.Position.Y + player.Texture.Height) {
+				//		collided = true;
+				//		break;
+				//	}
+				//}
 
-				Bloc targetedBloc = myMap[(int)Math.Floor(posHover.X / scale), size.Y - 1 - (int)Math.Floor(posHover.Y / scale)];
-				if (Math.Abs((targetedBloc.PositionCenter - player.PositionCenter).Length()) < circleRadius) {
-					blocReachable = true;
-				} else {
-					blocReachable = false;
-				}
+				//Bloc targetedBloc = myMap[(int)posHover.X, (int)posHover.Y];
+				//if (Math.Abs((targetedBloc.PositionCenter - player.PositionCenter).Length()) < circleRadius) {
+				//	blocReachable = true;
+				//} else {
+				//	blocReachable = false;
+				//}
 
 				if (collided) {
 					Console.WriteLine("Collided");
@@ -173,8 +170,13 @@ namespace NoIdea
 				mousePos = new Vector2(0, 0);
 			}
 
+			if (state.LeftButton == ButtonState.Pressed) {
+				RemoveBlock();
+			} else if (state.RightButton == ButtonState.Pressed) {
+				PlaceBlock();
+			}
+
 		}
-		*/
 
 		public void PlaceBlock()
 		{
@@ -214,7 +216,7 @@ namespace NoIdea
 				if (blocReachable)
 					spriteBatch.Draw(textureHover, posHover, null, Color.White);
 				else
-					spriteBatch.Draw(textureHoverRed, posHover, null, Color.White);
+					spriteBatch.Draw(textureHoverRed, posHover * scale, null, Color.White);
 								
 				spriteBatch.Draw(textureCursor, mousePos - new Vector2(textureCursor.Width, textureCursor.Height) / 2, Color.White);
 			}

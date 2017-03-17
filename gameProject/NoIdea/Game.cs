@@ -91,7 +91,7 @@ namespace NoIdea
 
 			// TODO: Add your update logic here
 			world.ReadFromKeyboard(Keyboard.GetState());
-			//world.ReadFromMouse(Mouse.GetState());
+			world.ReadFromMouse(Mouse.GetState(), camera);
 
 			world.Update(gameTime);
 

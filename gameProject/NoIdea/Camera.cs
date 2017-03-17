@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace NoIdea
 {
-	class Camera
+	public class Camera
 	{
 		public Matrix transform;
 		Viewport view;
-		Vector2 center;
+		public Vector2 center;
 
 		public Camera(Viewport newView)
 		{
