@@ -143,37 +143,39 @@ namespace NoIdea
 
 				bool collided = false;
 				Vector2[] hoverCorners = new Vector2[4] {   new Vector2(posHover.X, posHover.Y),
-															new Vector2(posHover.X + textureHover.Width, posHover.Y),
-															new Vector2(posHover.X, posHover.Y + textureHover.Height),
-															new Vector2(posHover.X + textureHover.Width, posHover.Y + textureHover.Height)};
-				//for (int i = 0; i < 4; i++) {
-				//	if (hoverCorners[i].X > player.Position.X && hoverCorners[i].X < player.Position.X + player.Texture.Width &&
-				//		sizePx.Y - hoverCorners[i].Y > player.Position.Y && sizePx.Y - hoverCorners[i].Y < player.Position.Y + player.Texture.Height) {
-				//		collided = true;
-				//		break;
-				//	}
-				//}
-
-				//Bloc targetedBloc = myMap[(int)posHover.X, (int)posHover.Y];
-				//if (Math.Abs((targetedBloc.PositionCenter - player.PositionCenter).Length()) < circleRadius) {
-				//	blocReachable = true;
-				//} else {
-				//	blocReachable = false;
-				//}
-
-				if (collided) {
-					Console.WriteLine("Collided");
-					blocReachable = false;
+															new Vector2(posHover.X + 1, posHover.Y),
+															new Vector2(posHover.X, posHover.Y + 1),
+															new Vector2(posHover.X + 1, posHover.Y + 1)};
+				for (int i = 0; i < 4; i++) {
+					if (hoverCorners[i].X > player.RealPosition.X &&			hoverCorners[i].X < player.RealPosition.X + player.Texture.Width/(float)scale &&
+						size.Y - hoverCorners[i].Y > player.RealPosition.Y &&	size.Y - hoverCorners[i].Y < player.RealPosition.Y + player.Texture.Height/(float)scale) {
+						collided = true;
+						break;
+					}
 				}
-				
+
+				if (posHover.X > Vector2.Zero.X && posHover.Y > Vector2.Zero.Y) {
+					Bloc targetedBloc = myMap[(int)posHover.X, (int)posHover.Y];
+					if (Math.Abs((targetedBloc.PositionCenter - player.PositionCenter).Length()) < circleRadius) {
+						blocReachable = true;
+					} else {
+						blocReachable = false;
+					}
+
+					if (collided)
+						blocReachable = false;
+					else
+						blocReachable = true;
+
+					if (state.LeftButton == ButtonState.Pressed) {
+						RemoveBlock();
+					} else if (state.RightButton == ButtonState.Pressed) {
+						PlaceBlock();
+					}
+				}
+
 			} else {
 				mousePos = new Vector2(0, 0);
-			}
-
-			if (state.LeftButton == ButtonState.Pressed) {
-				RemoveBlock();
-			} else if (state.RightButton == ButtonState.Pressed) {
-				PlaceBlock();
 			}
 
 		}
@@ -214,7 +216,7 @@ namespace NoIdea
 			if (mousePos.X > 0 && mousePos.X < sizePx.X && mousePos.Y > 0 && mousePos.Y < sizePx.Y) {
 				
 				if (blocReachable)
-					spriteBatch.Draw(textureHover, posHover, null, Color.White);
+					spriteBatch.Draw(textureHover, posHover * scale, null, Color.White);
 				else
 					spriteBatch.Draw(textureHoverRed, posHover * scale, null, Color.White);
 								

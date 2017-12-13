@@ -135,8 +135,8 @@ namespace NoIdea.GameObjects
 				IsJumping = false;
 			}
 
-			if ((world.MyMap[(int)Math.Floor(RealPosition.X), (int)Math.Floor(value)].blocking ||
-				 world.MyMap[(int)Math.Floor(RealPosition.X  + (Texture.Width - 1) / world.scale), (int)Math.Floor(value)].blocking) && IsJumping) {
+			if ((world.MyMap[(int)Math.Floor(RealPosition.X),										(int)Math.Floor(value)].blocking ||
+				 world.MyMap[(int)Math.Floor(RealPosition.X  + (Texture.Width - 1) / world.scale),	(int)Math.Floor(value)].blocking) && IsJumping) {
 				value = ((int)Math.Floor(value) + 1);
 				IsJumping = false;
 			}
