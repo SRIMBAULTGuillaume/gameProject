@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NoIdea.GameObjects.Blocs
 {
-	class Bloc
+	public class Bloc
 	{
 		private Vector2 _position;
 		public Vector2 Position
@@ -18,7 +18,7 @@ namespace NoIdea.GameObjects.Blocs
 		}
 		public Vector2 PositionCenter
 		{
-			get { return new Vector2(_position.X - (myWorld.scale / 2), _position.Y - (myWorld.scale / 2)); }
+			get { return new Vector2(_position.X + 0.5f, _position.Y + 0.5f); }
 		}
 		
 		private World myWorld;
@@ -50,7 +50,7 @@ namespace NoIdea.GameObjects.Blocs
 		public Bloc(int posX, int posY, IDBlock ID, World myWorld)
 		{
 
-			Position = new Vector2(posX * myWorld.scale, posY * myWorld.scale);
+			Position = new Vector2(posX, posY);
 
 			this.ID = ID;
 			this.myWorld = myWorld;
@@ -76,7 +76,7 @@ namespace NoIdea.GameObjects.Blocs
 			}
 
 			if (texture != null) {
-				Vector2 reversedPos = new Vector2(Position.X, myWorld.sizePx.Y - Position.Y - texture.Height);
+				Vector2 reversedPos = new Vector2(Position.X * myWorld.scale, (myWorld.size.Y - Position.Y)*myWorld.scale - texture.Height);
 
 				spriteBatch.Draw(texture, reversedPos, Color.White);
 			}
