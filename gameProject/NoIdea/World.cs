@@ -155,8 +155,8 @@ namespace NoIdea
                     }
                 }
 
-                if (posHover.X > Vector2.Zero.X && posHover.Y > Vector2.Zero.Y) {
-                    Bloc targetedBloc = myMap[(int) posHover.X, (int) posHover.Y];
+                if (posHover.X >= Vector2.Zero.X && posHover.Y >= Vector2.Zero.Y) {
+                    Bloc targetedBloc = myMap[(int) posHover.X, size.Y - ((int) posHover.Y + 1)];
 
                     Console.WriteLine(targetedBloc.PositionCenter + " " + player.PositionCenter);
 

@@ -21,7 +21,7 @@ namespace NoIdea.GameObjects
         }
         public Vector2 PositionCenter
         {
-            get { return new Vector2((RealPosition.X - ((float) Texture.Width / world.scale) / 2), (RealPosition.Y - ((float) Texture.Height / world.scale) / 2)); }
+            get { return new Vector2((RealPosition.X + ((float) Texture.Width / world.scale) / 2), (RealPosition.Y + ((float) Texture.Height / world.scale) / 2)); }
         }
         #region SET POSITION (X & Y)
         private void SetX(float value)
