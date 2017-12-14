@@ -70,7 +70,7 @@ namespace NoIdea
 
             size = new Point(width, height);
 
-            circleRadius = scale * 2.8f;
+            circleRadius = 3.6f;
         }
         #endregion
 
@@ -157,22 +157,18 @@ namespace NoIdea
 
                 if (posHover.X > Vector2.Zero.X && posHover.Y > Vector2.Zero.Y) {
                     Bloc targetedBloc = myMap[(int) posHover.X, (int) posHover.Y];
-                    if (Math.Abs((targetedBloc.PositionCenter - player.PositionCenter).Length()) < circleRadius) {
+
+                    Console.WriteLine(targetedBloc.PositionCenter + " " + player.PositionCenter);
+
+                    if (Math.Abs((targetedBloc.PositionCenter - player.PositionCenter).Length()) <= circleRadius && !collided) {
                         blocReachable = true;
                     } else {
                         blocReachable = false;
                     }
 
-                    if (collided)
-                        blocReachable = false;
-                    else
-                        blocReachable = true;
-
                     if (state.LeftButton == ButtonState.Pressed) {
-                        Console.WriteLine("X : " + state.X + ", Y : " + state.Y);
                         RemoveBlock();
                     } else if (state.RightButton == ButtonState.Pressed) {
-                        Console.WriteLine("X : " + state.X + ", Y : " + state.Y);
                         PlaceBlock();
                     }
                 }
